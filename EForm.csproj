@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="GeneratedModels\TableGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TableGenerator.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
+			<PriVATeAssets>all</PriVATeAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
+			<PriVATeAssets>all</PriVATeAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Data.OleDb" Version="6.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="GeneratedModels\ContextGenerator.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ContextGenerator.tt</DependentUpon>
+	  </Compile>
+	  <Compile Update="GeneratedModels\TableGenerator.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>TableGenerator.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="GeneratedModels\ContextGenerator.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>ContextGenerator.cs</LastGenOutput>
+	  </None>
+	  <None Update="GeneratedModels\TableGenerator.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>TableGenerator.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+</Project>

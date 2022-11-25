@@ -1,0 +1,138 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.OleDb" #>
+<#@ import namespace="System.Data" #>
+<#@ output extension=".cs" #>
+<#
+//CHANGE HERE FOR YOUR DATABASE AND DATABASE CONNECTION
+var name = "TestDataBase";
+var connectionString = $"Provider=sqloledb;Data Source=VIKIGEPE\\SQLEXPRESS;Initial Catalog={name};Integrated Security=SSPI;";
+#>
+
+<#
+using(var conn = new OleDbConnection(connectionString))
+{
+conn.Open();
+#>
+using System;
+using System.Collections.Generic;
+namespace EForm.GeneratedModels
+{
+    <#
+    string[] restrictionsT = new string[4];
+    restrictionsT[3] = "Table";
+    DataTable tables = conn.GetSchema("Tables", restrictionsT);
+	foreach (DataRow tableRow in tables.Rows)
+    {#>
+public partial class <#=  tableRow[2] #>
+    {
+        public <#=  tableRow[2] #>()
+        {
+            <#
+            string[] restrictionsFK = { null };
+            DataTable fk = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Foreign_Keys, restrictionsFK);
+            foreach (DataRow fkRow in fk.Rows)
+            {
+                if(tableRow[2].ToString() == fkRow[2].ToString())
+                {
+                #>
+
+            <#= (string)fkRow[8]  #>s = new HashSet<<#= (string)fkRow[8]  #>>();
+                <#
+                }
+            }
+            #>
+            
+        }
+            <#
+            string[] restrictionsAtt = new string[4];
+            restrictionsAtt[1] = "dbo";
+            DataTable attributes = conn.GetSchema("Columns", restrictionsAtt);
+            foreach (DataRow attributesRow in attributes.Rows)
+            {
+                if(tableRow[2].ToString() == attributesRow[2].ToString())
+                {
+                    string questionMark = "? ";
+                    if(attributesRow[10].ToString() == "False")
+                        questionMark = " ";
+                    {#>
+
+        public <#= Type((int)attributesRow[11])  #><#= questionMark #><#= attributesRow[3]  #> { get; set; }
+                    <#
+                    }
+                }
+            }
+
+            
+            foreach (DataRow fkRow in fk.Rows)
+            {
+                if(tableRow[2].ToString() == fkRow[8].ToString())
+                {
+                string questionMark = "? ";
+                    if(fkRow[8].ToString() == fkRow[2].ToString())
+                        questionMark = "? Parent";#>
+
+        public virtual <#= (string)fkRow[2]  #><#= questionMark  #><#= (string)fkRow[2] #> { get; set; }
+                <#}
+            }
+            foreach (DataRow fkRow in fk.Rows)
+            {
+                if(tableRow[2].ToString() == fkRow[2].ToString())
+                {#>
+
+        public virtual ICollection<<#= (string)fkRow[8]  #>> <#= (string)fkRow[8] #>s { get; set; }
+                <#}
+            }
+            #>
+           
+         
+    }
+    <#
+    }
+    #>
+    
+}
+<# 
+}
+#>
+
+<#
+    String Type(int num) 
+    {
+        String type = null;
+        if(num == 130 || num == 129)
+            type = "String";
+        else if(num == 20)
+            type = "Int64";
+        else if(num == 128 || num == 132)
+            type = "Byte[]";
+        else if(num == 11)
+            type = "Boolean";
+        else if(num == 6 || num == 14 || num == 131)
+            type = "Decimal";
+        else if(num == 7 || num == 133 || num == 135 || num == 64)
+            type = "DateTime";
+        else if(num == 134)
+            type = "TimeSpan";
+        else if(num == 5)
+            type = "Double";
+        else if(num == 3)
+            type = "Int32";
+        else if(num == 72)
+            type = "Guid";
+        else if(num == 4)
+            type = "Single";
+        else if(num == 2)
+            type = "Int16";
+        else if(num == 12)
+            type = "Object";
+        else if(num == 17)
+            type = "Byte";
+        
+        return type;
+    }
+#>
